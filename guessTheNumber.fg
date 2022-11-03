@@ -6,9 +6,9 @@
 #====================================================
 
 %deffunc gameCourse (p_minNumber p_maxNumber) {seq
-	.var numberToGuess <- :randomIntBetween $p_minNumber $p_maxNumber
-	.var tryNumber <- 'not_defined'
-	.var numberOfSteps <- 0
+	.var numberToGuess <-- :randomIntBetween $p_minNumber $p_maxNumber
+	.var tryNumber <-- 'not_defined'
+	.var numberOfSteps <-- 0
 	
 	.print :+ 'Answer: ' $numberToGuess # to cheat
 	
@@ -37,10 +37,10 @@
 #====================================================
 #====================================================
 
-.var numGameCourse <- 0
-.var score <- 0
-.var level <- 1
-.var limitNumber <- 2
+.var numGameCourse <-- 0
+.var score <-- 0
+.var level <-- 1
+.var limitNumber <-- 2
 .var theGameCourse
 
 # main
@@ -58,7 +58,7 @@
 		.waitSeconds 3
 		
 		# update infos
-		.var diffScore <- [[3 * $level] - $gameCourseNumberOfSteps]
+		.var diffScore <-- [[3 * $level] - $gameCourseNumberOfSteps]
 		score <-- [+ $diffScore]
 		{ if [$gameCourseNumberOfSteps <= $level] {seq
 			level <-- [+ 1]
