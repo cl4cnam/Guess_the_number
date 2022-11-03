@@ -35,3 +35,7 @@ body {
 	display: flex;
 	flex-direction: column;
 }
+
+.canceled::after {
+	content: '------Canceled------'
+}
