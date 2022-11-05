@@ -39,7 +39,7 @@
 #
 #====================================================
 #====================================================
-
+.var main
 .var numGameCourse <-- 0
 .var score <-- 0
 .var level <-- 1
@@ -48,7 +48,7 @@
 
 # main
 #======================
-{mix
+{mix @main
 	# Game
 	#--------
 	{while true {seq @theGameCourse
@@ -80,6 +80,13 @@
 		.break theGameCourse
 	}}
 
+	# quit
+	#----------
+	{while true {seq
+		.awaitClickBeep '#quit'
+		.break main
+	}}
+
 	# Display of all pieces of information
 	#-------------------------------------
 	{while true {seq
@@ -96,4 +103,9 @@
 		:await level beep
 		:displayMessageIn $level '#level'
 	}}
+}
+
+~{seq
+	:displayNewMessageIn (+ 'Good job! You get '  $score  ' in ' $numGameCourse ' courses.') '#gameBoard'
+	:displayNewMessageIn  'Good bye see you soon! ' '#gameBoard'
 }

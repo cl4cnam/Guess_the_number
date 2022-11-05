@@ -18,7 +18,7 @@ header p {
 	background-color: #f8fcfc;
 	padding: 10px;
 	display: flex;
-	justify-content: center;
+	justify-content: space-around;
 }
 
 #foot button {
