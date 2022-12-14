@@ -5,7 +5,7 @@
 #====================================================
 #====================================================
 
-%deffunc gameCourse (p_minNumber p_maxNumber) {seq
+{deffunc gameCourse (p_minNumber p_maxNumber)
 	.var numberToGuess <-- :randomIntBetween $p_minNumber $p_maxNumber
 	.var tryNumber <-- 'not_defined'
 	.var numberOfSteps <-- 0
@@ -13,7 +13,7 @@
 	.print :+ 'Answer: ' $numberToGuess # to cheat
 
 	:displayNewMessageIn (+ 'Guess my number (between ' $p_minNumber ' and ' $p_maxNumber ')!') '#gameBoard'
-	{while [ $tryNumber /= $numberToGuess ] {seq
+	{while [ $tryNumber /= $numberToGuess ]
 		# Try
 		#=====
 		tryNumber <-- .awaitNewHumanNumberIn '#gameBoard'
@@ -24,7 +24,7 @@
 		{ if [$tryNumber < $numberToGuess] :displayNewMessageIn 'Too low! Try again!' '#gameBoard' }
 		{ if [$tryNumber > $numberToGuess] :displayNewMessageIn 'Too high! Try again!' '#gameBoard' }
 		{ if [$tryNumber = $numberToGuess] :displayNewMessageIn ['Well Done! Number of steps: ' + $numberOfSteps] '#gameBoard' }
-	}}
+	}
 	~{
 		displayNewMessageIn (+ 'The number to guess is  ' $numberToGuess ) '#gameBoard'
 	}
@@ -63,46 +63,46 @@
 		# update infos
 		.var diffScore <-- [[3 * $level] - $gameCourseNumberOfSteps]
 		score <-- [+ $diffScore]
-		{ if [$gameCourseNumberOfSteps <= $level] {seq
+		{ if [$gameCourseNumberOfSteps <= $level]
 			level <-- [+ 1]
 			limitNumber <-- [* 2]
-		}}
+		}
 	}}
 
 	# Interrupt
 	#----------
-	{while true {seq
+	{while true
 		.awaitClickBeep '#giveUp'
-		{if [$level > 1] {seq
+		{if [$level > 1]
 			level <-- [- 1]
 			limitNumber <-- [/ 2]
-		}}
+		}
 		.break theGameCourse
-	}}
+	}
 
 	# quit
 	#----------
-	{while true {seq
+	{while true
 		.awaitClickBeep '#quit'
 		.break main
-	}}
+	}
 
 	# Display of all pieces of information
 	#-------------------------------------
-	{while true {seq
+	{while true
 		:await numGameCourse beep
 		{if [$numGameCourse > 0]
 			:displayNewMessageIn (+ 'Game Course #' $numGameCourse) '#gameBoard/title'
 		}
-	}}
-	{while true {seq
+	}
+	{while true
 		:await score beep
 		:displayMessageIn $score '#score'
-	}}
-	{while true {seq
+	}
+	{while true
 		:await level beep
 		:displayMessageIn $level '#level'
-	}}
+	}
 }
 
 ~{seq
