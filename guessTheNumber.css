@@ -2,11 +2,14 @@ header {
 	background-color: #f8fcfc;
 	display: flex;
 	justify-content: space-between;
+	box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.5);
+	z-index: 200;
 }
 
 header p {
 	background-color: #f0f0f0;
-	padding: 10px;
+	padding: 20px;
+	margin: 0;
 }
 
 #gameBoard {
@@ -19,10 +22,21 @@ header p {
 	padding: 10px;
 	display: flex;
 	justify-content: space-around;
+	box-shadow: 0px -8px 10px rgba(0, 0, 0, 0.5);
 }
 
 #foot button {
 	font-size: 1.5em;
+	padding: 4px;
+	background-color: #aaa;
+	appearance: none;
+	border: outset black 3px;
+	border-radius: 10px;
+}
+
+#foot button[disabled] {
+	color: #ccc;
+	text-shadow: -1px -1px rgba(0, 0, 0, 0.5);
 }
 
 body, html {
@@ -32,10 +46,36 @@ body, html {
 }
 
 body {
+	background-image: url(background.svg);
+	background-color: #448;
+	background-blend-mode: multiply;
 	display: flex;
 	flex-direction: column;
 }
 
 .canceled::after {
 	content: '------Canceled------'
+}
+
+.highlight {
+	background-color: #00ff00;
+}
+
+p.other, p.self {
+	filter: drop-shadow(4px 4px 5px black);
+}
+
+p.title {
+	border: outset black 5px;
+	filter: url(filters.svg#customNoise) drop-shadow(4px 4px 5px black);
+}
+
+#title {
+	background-color: rgba(0, 0, 0, 0);
+	font-family: sans-serif;
+	font-weight: bold;
+	color: blue;
+	font-size: 2em;
+	margin: 0;
+	padding: 4px;
 }
