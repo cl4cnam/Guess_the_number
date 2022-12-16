@@ -39,6 +39,10 @@ header p {
 	text-shadow: -1px -1px rgba(0, 0, 0, 0.5);
 }
 
+#foot button:active {
+	border: inset black 3px;
+}
+
 body, html {
 	margin: 0;
 	padding: 0;
