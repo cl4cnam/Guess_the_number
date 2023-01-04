@@ -43,6 +43,10 @@ header p {
 	border: inset black 3px;
 }
 
+#foot button[disabled]:active {
+	border: outset black 3px;
+}
+
 body, html {
 	margin: 0;
 	padding: 0;
