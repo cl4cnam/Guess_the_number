@@ -1,5 +1,21 @@
 #====================================================
 #
+# utils
+#
+#====================================================
+#====================================================
+
+{deffunc blink (p_cssSelector)
+	{repeat 4
+		:addCssClassTo 'highlight' $p_cssSelector
+		.waitSeconds 0.3
+		:DelCssClassFrom 'highlight' $p_cssSelector
+		.waitSeconds 0.3
+	}
+}
+
+#====================================================
+#
 # gameCourse
 #
 #====================================================
@@ -10,9 +26,8 @@
 	.var tryNumber <-- 'not_defined'
 	.var numberOfSteps <-- 0
 
-	.print :+ 'Answer: ' $numberToGuess # to cheat
-
 	:displayNewMessageIn (+ 'Guess my number (between ' $p_minNumber ' and ' $p_maxNumber ')!') '#gameBoard'
+	
 	{while [ $tryNumber /= $numberToGuess ]
 		# Try
 		#=====
@@ -26,6 +41,8 @@
 		{ if [$tryNumber = $numberToGuess] :displayNewMessageIn ['Well Done! Number of steps: ' + $numberOfSteps] '#gameBoard' }
 	}
 	~{
+		# What to do if interrupted
+		#===========================
 		displayNewMessageIn (+ 'The number to guess was ' $numberToGuess '.') '#gameBoard'
 	}
 	# Return
@@ -44,47 +61,59 @@
 .var numGameCourse <-- 0
 .var score <-- 0
 .var level <-- 1
-.var limitNumber <-- 2
+.var limitNumber <-- 8
 .var theGameCourse
 
+#======================
 # main
 #======================
 
+# This is a "par" bloc: all direct child blocks of it are executed in parallel
 {par @main
 	
 	# Game
-	#--------
-	{while true {seq @theGameCourse
+	#=======
+	{whileTrue @theGameCourse
 		.var gameCourseNumberOfSteps
 
 		# Game course
+		#------------
 		numGameCourse <-- [+ 1]
 		.waitSeconds 1
+		
+		# -----> This is the point of the program: calling "gameCourse" function !!!! <-----
 		gameCourseNumberOfSteps <-- :gameCourse 1 [$limitNumber - 1]
+		# Now, a game course is finished
 
-		# update infos
+		# update score
+		#-------------
 		.var diffScore <-- [[3 * $level] - $gameCourseNumberOfSteps]
+		diffScore <-- [+ 6]
 		score <-- [+ $diffScore]
-		{ if [$gameCourseNumberOfSteps <= $level]
+		
+		# update level and limit
+		#-----------------------
+		{if [$gameCourseNumberOfSteps <= [$level + 2]]
 			level <-- [+ 1]
 			limitNumber <-- [* 2]
 		}
 		.waitSeconds 3
-	}}
+	}
 
 	# Interrupt
-	#----------
-	{while true
+	#============
+	{whileTrue
 		.awaitClickBeep '#giveUp'
 		{if [$level > 1]
 			level <-- [- 1]
 			limitNumber <-- [/ 2]
 		}
-		.break theGameCourse
+		.restart theGameCourse
 	}
 
 	# quit
-	#----------
+	#========
+	# I have to say it's a sequence ("seq") because I'm a direct child of a "par" block
 	{seq
 		.awaitClickBeep '#quit'
 		.break main
@@ -92,39 +121,26 @@
 
 	# Display of all pieces of information
 	#-------------------------------------
-	{while true
+	{whileTrue
 		:await numGameCourse beep
 		{if [$numGameCourse > 0]
 			:displayNewMessageIn (+ 'Game Course #' $numGameCourse) '#gameBoard/title'
 		}
 	}
-	{while true
+	{whileTrue
 		:await score beep
 		:displayMessageIn $score '#score'
-		
-		:addCssClassTo 'highlight' '#scoreHead'
-		.waitSeconds [1 / 3]
-		:DelCssClassFrom 'highlight' '#scoreHead'
-		.waitSeconds [1 / 3]
-		:addCssClassTo 'highlight' '#scoreHead'
-		.waitSeconds [1 / 3]
-		:DelCssClassFrom 'highlight' '#scoreHead'
+		.blink '#scoreHead'
 	}
-	{while true
+	{whileTrue
 		:await level beep
 		:displayMessageIn $level '#level'
-		
-		:addCssClassTo 'highlight' '#levelHead'
-		.waitSeconds [1 / 3]
-		:DelCssClassFrom 'highlight' '#levelHead'
-		.waitSeconds [1 / 3]
-		:addCssClassTo 'highlight' '#levelHead'
-		.waitSeconds [1 / 3]
-		:DelCssClassFrom 'highlight' '#levelHead'
+		.blink '#levelHead'
 	}
 }
 
+#======================
 # Good bye
 #======================
-:displayNewMessageIn (+ 'Good job! You get '  $score  ' in ' $numGameCourse ' courses.') '#gameBoard'
-:displayNewMessageIn  'Good bye! See you soon! ' '#gameBoard'
+:displayNewMessageIn   (+  'Good job! You get '  $score  ' in '  $numGameCourse  ' courses.')   '#gameBoard'
+:displayNewMessageIn   'Good bye! See you soon!'   '#gameBoard'
