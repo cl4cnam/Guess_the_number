@@ -1,0 +1,136 @@
+#!syntax:pythonic
+
+#====================================================
+#
+# utils
+#
+#====================================================
+#====================================================
+
+def blink(p_cssSelector):
+	repeat 4:
+		addCssClassTo('highlight', p_cssSelector)
+		waitSeconds(0.3)
+		DelCssClassFrom('highlight', p_cssSelector)
+		waitSeconds(0.3)
+
+#====================================================
+#
+# gameCourse
+#
+#====================================================
+#====================================================
+
+def gameCourse(p_minNumber, p_maxNumber):
+	var numberToGuess := randomIntBetween(p_minNumber, p_maxNumber)
+	var tryNumber := 'not_defined'
+	var numberOfSteps := 0
+
+	displayNewMessageIn('Guess my number (between ' + p_minNumber + ' and ' + p_maxNumber + ')!', '#gameBoard')
+	
+	while tryNumber != numberToGuess:
+		# Try
+		#=====
+		tryNumber := awaitNewHumanNumberIn('#gameBoard')
+		numberOfSteps += 1
+
+		# Answer
+		#========
+		if tryNumber < numberToGuess:
+			displayNewMessageIn('Too low! Try again!', '#gameBoard')
+		if tryNumber > numberToGuess:
+			displayNewMessageIn('Too high! Try again!', '#gameBoard')
+		if tryNumber = numberToGuess:
+			displayNewMessageIn('Well Done! Number of steps: ' + numberOfSteps, '#gameBoard')
+	onBreak:
+		# What to do if interrupted
+		#===========================
+		displayNewMessageIn('The number to guess was ' + numberToGuess + '.', '#gameBoard')
+	# Return
+	#=======
+	numberOfSteps
+
+#====================================================
+#
+# main program
+#
+#====================================================
+#====================================================
+
+var main
+var numGameCourse := 0
+var score := 0
+var level := 1
+var limitNumber := 8
+var theGameCourse
+
+#======================
+# main
+#======================
+
+# This is a "par" bloc: all direct child blocks of it are executed in parallel
+par: @main
+	
+	# Game
+	#=======
+	while true: @theGameCourse
+		var gameCourseNumberOfSteps
+
+		# Game course
+		#------------
+		numGameCourse += 1
+		waitSeconds(1)
+		
+		# -----> This is the point of the program: calling "gameCourse" function !!!! <-----
+		gameCourseNumberOfSteps := gameCourse(1, limitNumber-1)
+		# Now, a game course is finished
+
+		# update score
+		#-------------
+		var diffScore := 3*level - gameCourseNumberOfSteps
+		diffScore += 6
+		score += diffScore
+		
+		# update level and limit
+		#-----------------------
+		if gameCourseNumberOfSteps <= level+2:
+			level += 1
+			limitNumber *= 2
+		waitSeconds(3)
+
+	# Interrupt
+	#============
+	while true:
+		awaitClickBeep('#giveUp')
+		if level>1:
+			level -= 1
+			limitNumber /= 2
+		restart theGameCourse
+
+	# quit
+	#========
+	# I have to say it's a sequence ("seq") because I'm a direct child of a "par" block
+	seq:
+		awaitClickBeep('#quit')
+		break main
+
+	# Display of all pieces of information
+	#-------------------------------------
+	while true:
+		awaitBeep numGameCourse
+		if numGameCourse>0:
+			displayNewMessageIn('Game Course #' + numGameCourse, '#gameBoard/title')
+	while true:
+		awaitBeep score
+		displayMessageIn(score, '#score')
+		blink('#scoreHead')
+	while true:
+		awaitBeep level
+		displayMessageIn(level, '#level')
+		blink('#levelHead')
+
+#======================
+# Good bye
+#======================
+displayNewMessageIn('Good job! You get ' + score + ' in ' + numGameCourse + ' courses.', '#gameBoard')
+displayNewMessageIn('Good bye! See you soon!', '#gameBoard')
