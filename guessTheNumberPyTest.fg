@@ -1,0 +1,48 @@
+#!syntax:pythonic
+
+def startOfString(p_text, p_howManyCharacter):
+	js (p_text, p_howManyCharacter):
+		return p_text.slice(0, p_howManyCharacter)
+
+def getAnswer():
+	var answer := getText('#gameBoard p:nth-last-of-type(2)')
+	var answer2 := getText('#gameBoard p:nth-last-of-type(1)')
+	var result
+	if answer = 'Too low! Try again!':
+		result := 'tooLow'
+	if answer = 'Too high! Try again!':
+		result := 'tooHigh'
+	if startOfString(answer2, 10) = 'Well Done!':
+		result := 'equal'
+	result
+
+print('Test ++++++++++++++++++++++++++++')
+
+var answ
+
+waitSeconds(2)
+enterEntry('#gameBoard .entry', '0')
+waitSeconds(0.1)
+enterEntry('#gameBoard .entry', '0')
+waitSeconds(0.1)
+enterEntry('#gameBoard .entry', '0')
+waitSeconds(0.1)
+enterEntry('#gameBoard .entry', '4')
+waitSeconds(0.1)
+answ := getAnswer()
+if answ = 'tooLow':
+	enterEntry('#gameBoard .entry', '6')
+	waitSeconds(0.1)
+	answ := getAnswer()
+	if answ = 'tooLow':
+		enterEntry('#gameBoard .entry', '7')
+	if answ = 'tooHigh':
+		enterEntry('#gameBoard .entry', '5')
+if answ = 'tooHigh':
+	enterEntry('#gameBoard .entry', '2')
+	waitSeconds(0.1)
+	answ := getAnswer()
+	if answ = 'tooLow':
+		enterEntry('#gameBoard .entry', '3')
+	if answ = 'tooHigh':
+		enterEntry('#gameBoard .entry', '1')
